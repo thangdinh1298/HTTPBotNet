@@ -17,7 +17,7 @@ result = ""
 def get_command():
     command = requests.get("http://" + MASTER_IP + ":" + MASTER_PORT + "/get_command").json()
     # print("Command is:", command.content.decode('ascii'))
-    return command.content.decode('ascii')
+    return command
 
 def parse_ret_val(ret_val):
     cmd = ret_val['command']
@@ -94,7 +94,6 @@ def run():
             command  =  get_command()
             command = parse_ret_val(command)
             if str(command[0]) not in steps:
-                time.sleep(5)
                 continue
             else:
                 print("command is:", command[0])
@@ -109,8 +108,8 @@ def run():
                     #     step()
                     else:
                         step()
-                time.sleep(5)
         except Exception as e:
-            continue
+            pass
+        time.sleep(5)
 if __name__ == "__main__":
     run()
