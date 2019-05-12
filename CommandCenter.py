@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, request
+from flask import Flask, request, send_file, request, jsonify
 import socket
 import os
 import requests
@@ -53,7 +53,11 @@ def upload_file():
     
 @app.route('/get_command', methods = ['GET'])
 def get_command():
-    return current_command + " " + path
+	ret = {
+		"command": current_command,
+		"path": path
+	}
+	return jsonify(ret)
 
 
 if __name__ == "__main__":
