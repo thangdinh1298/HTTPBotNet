@@ -98,8 +98,7 @@ steps = {
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
     "upload" : (upload_file, ),
-    "update_agent" : (update_agent, )
-    "runcmd" (runcmd, )
+    "runcmd" : (runcmd, )
 }
 
 
