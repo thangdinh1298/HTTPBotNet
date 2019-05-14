@@ -31,6 +31,7 @@ Các máy bị nhiễm liên tục hỏi server xem lệnh tiếp theo cần th�
     + Thực hiện tấn công DDoS lên một máy chủ
     + Thực hiện một lệnh command bất kỳ (runcmd)
 
+- Lệnh Standby sẽ khiến Agent (Máy bị nhiễm) ngủ trong khoảng thời gian được định bởi người điều khiển. Trong quá trình ngủ, máy chủ và máy nạn nhân không có bất kỳ giao tiếp nào. 
 - Các lệnh cd, pwd, ls thực chất sử dụng thư viện os của python nên tương thích với cả hệ điều hành windows và linux
 - Runcmd không sử dụng thư viện hệ thống của python nên người ra lệnh sẽ phải định dạng lệnh phù hợp với hệ điều hành
 - Thực hiện DDoS sẽ tải script slowLoris.py từ server về và thực hiện tấn công vào một máy chủ đã định
