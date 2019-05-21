@@ -46,38 +46,38 @@ Các máy bị nhiễm liên tục hỏi server xem lệnh tiếp theo cần th�
 - Muốn điều khiển các Agent, thực hiện gửi POST request lên endpoint set_action của CommandCenter. Nội dung của request gồm lệnh muốn máy bị điều khiển thực hiện và một số thông tin khác tùy theo lệnh. Để gửi các request có thể dùng các tool như Postman (GUI) hay curl (CLI)
 - Body của các request đều phải để dưới dạng json. Định dạng các lệnh:
 pwd <br />
-{
-	"command":"pwd",
+{ <br />
+	"command":"pwd", <br />
 }
 
 cd <br />
-{
-	"command":"cd",
-	"extra" : "/home/abcde" //duong dan den thu muc muon chuyen den
+{ <br />
+	"command":"cd", <br />
+	"extra" : "/home/abcde" //duong dan den thu muc muon chuyen den <br />
 }
 
 ls <br />
-{
-	"command":"ls",
-	"extra" : "/home/abcde" //duong dan den thu muc muon liet ke file
+{ <br />
+	"command":"ls", <br />
+	"extra" : "/home/abcde" //duong dan den thu muc muon liet ke file <br />
 }
 
 upload <br />
 {
-	"command":"upload",
-	"extra" : "abc.txt" //tên file muốn upload. File phải ở trong thư mục hiện tại
+	"command":"upload", <br />
+	"extra" : "abc.txt" //tên file muốn upload. File phải ở trong thư mục hiện tại <br />
 }
 
 Standby <br />
 {
-	"command":"Standby",
-	"extra" : "0.0012" //Khoảng thời gian standby (tính bằng giờ. 0.0012h = 5s)
+	"command":"Standby", <br />
+	"extra" : "0.0012" //Khoảng thời gian standby (tính bằng giờ. 0.0012h = 5s) <br />
 }
 
 runcmd <br />
 {
-	"command":"runcmd",
-	"extra" : "ten command" //Lệnh muốn thực hiện trên terminal/cmd
+	"command":"runcmd", <br />
+	"extra" : "ten command" //Lệnh muốn thực hiện trên terminal/cmd <br />
 }
 
 ![Screenshot from 2019-05-21 23-09-43](https://user-images.githubusercontent.com/32330003/58112692-36194680-7c1e-11e9-8ef1-be3d8b95f62d.png)
