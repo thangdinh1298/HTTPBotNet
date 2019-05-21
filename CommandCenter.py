@@ -19,7 +19,7 @@ def home():
 @app.route('/get_script')
 def get_script():
     try:
-        return send_file('/home/thang/Desktop/HTTPbot/slowloris.py', attachment_filename='slowloris.py')
+        return send_file('slowloris.py', attachment_filename='slowloris.py')
     except Exception as e:
 	    return str(e)
 
